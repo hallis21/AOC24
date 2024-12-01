@@ -1,6 +1,3 @@
+print([[sum([abs([x[1] for x in vars2["stripped"]][i] - sorted([x[0] for x in vars2["stripped"]])[i]) for i in range(len(vars2["stripped"]))]) for  vars2 in [{"stripped": [[int(y) for y in x.strip().split("  ")] for x in vars["inp"]]}]] for vars in [{"inp": open("in").readlines()}]])
 
-print(sum([abs([x[1] for x in [[int(y) for y in x.strip().split("  ")] for x in open("in").readlines()]][i] - sorted([x[0] for x in [[int(y) for y in x.strip().split("  ")] for x in open("in").readlines()]])[i]) for i in range(len([[int(y) for y in x.strip().split("  ")] for x in open("in").readlines()]))]))
-
-print()
-
-print(sum([[[int(y) for y in x.strip().split("  ")] for x in open("in").readlines()][n][0] * [x[1] for x in [[int(y) for y in x.strip().split("  ")] for x in open("in").readlines()]].count([[int(y) for y in x.strip().split("  ")] for x in open("in").readlines()][n][0]) for n in range(len([[int(y) for y in x.strip().split("  ")] for x in open("in").readlines()]))]))
+print([[[sum([ number*vars3["right"].count(number) for number in vars3["left"] ]) for vars3 in [{"right": [x[1] for x in vars2["stripped"]], "left": [x[0] for x in vars2["stripped"]]}]] for vars2 in [{"stripped": [[int(y) for y in x.strip().split("  ")] for x in vars["inp"]]}]] for vars in [{"inp": open("in").readlines()}]])
