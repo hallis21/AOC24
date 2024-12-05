@@ -34,22 +34,21 @@ for order in ordering:
 
 middle = []
 
-if False:
-    for page in pages:
-        seen = []
-        good = True
+for page in pages:
+    seen = []
+    good = True
+    
+    for num in page:
+        if num in rules:
+            for rulenum in rules[num]:
+                if rulenum in seen:
+                    good = False
+        seen.append(num)
+                
+    if good:
+        middle.append(int(seen[len(page)//2]))
         
-        for num in page:
-            if num in rules:
-                for rulenum in rules[num]:
-                    if rulenum in seen:
-                        good = False
-            seen.append(num)
-                    
-        if good:
-            middle.append(int(seen[len(page)//2]))
-            
-    print(sum(middle))
+print(sum(middle))
                        
                        
 mid2 = []                       
@@ -80,9 +79,6 @@ for page in pages:
         if not swapped2:
             swapping = False
     if swapped:
-        print(oldPage)
-        print(page)
-        print()
         mid2.append(int(page[len(page)//2]))
 print(sum(mid2))
  
