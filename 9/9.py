@@ -1,42 +1,42 @@
-inp =list(open('inn').read().strip())
+inp =list(open('in').read().strip())
 
 
 # # (id, length, t/f)
-# blocks = []
-# block_id = 0
-# free_spots = []
+blocks = []
+block_id = 0
+free_spots = []
 
-# is_free = False
-# for n in inp:
-#     if is_free:
-#         for _ in range(int(n)):
-#             idx = len(blocks)
-#             free_spots.append(idx)
-#             blocks.append(None)
-#     else:
-#         for _ in range(int(n)):
-#             blocks.append(block_id)
-#         block_id += 1
+is_free = False
+for n in inp:
+    if is_free:
+        for _ in range(int(n)):
+            idx = len(blocks)
+            free_spots.append(idx)
+            blocks.append(None)
+    else:
+        for _ in range(int(n)):
+            blocks.append(block_id)
+        block_id += 1
             
-#     is_free = not is_free
+    is_free = not is_free
     
-# for free_spot in free_spots:
-#     if free_spot >= len(blocks):
-#         break
-#     val = blocks.pop()
-#     blocks[free_spot] = val
-#     while blocks[-1] == None:
-#         blocks.pop()
+for free_spot in free_spots:
+    if free_spot >= len(blocks):
+        break
+    val = blocks.pop()
+    blocks[free_spot] = val
+    while blocks[-1] == None:
+        blocks.pop()
         
-# answer = 0
+answer = 0
 
-# for pos, v in enumerate(blocks):
-#     answer += pos * v
+for pos, v in enumerate(blocks):
+    answer += pos * v
         
 
-# print(answer)
+print(answer)
 
-
+exit()
 
 blocks = []
 free = False
@@ -145,6 +145,17 @@ while first_untried != -1:
     
     first_untried = find_swap_not_tried(blocks)
 
-    
 
     
+
+nums = []
+
+for block in blocks:
+    nums.extend([block[0]]*block[1])
+    
+answer = 0
+for pos, v in enumerate(nums):
+    if v != -1:
+        answer += pos * v
+    
+print(answer)

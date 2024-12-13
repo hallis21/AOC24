@@ -1,83 +1,59 @@
 package main
 
-import (
-	"fmt"
-	"sync"
-)
+import "fmt"
 
 func main() {
 
-	var totalTokens int64
-	results := make(chan int64, len(games))
-	var wg sync.WaitGroup
+	var tokensPerGame []int64
 
-	for idx, game := range games {
-		wg.Add(1)
-		go func(idx int, game [][]int64) {
-			defer wg.Done()
-			l1 := game[0]
-			l2 := game[1]
-			l3 := game[2]
+	for _, game := range games {
+		l1 := game[0]
+		l2 := game[1]
+		l3 := game[2]
 
-			var possibleSolutions []int64
-			a := int64(0)
+		numerator := l2[1]*l3[0] - l2[0]*l3[1]
+		denominator := l2[1]*l1[0] - l2[0]*l1[1]
 
-			for {
+		if denominator == 0 {
+			continue
+		}
 
-				asumX := l1[0] * a
-				asumY := l1[1] * a
+		if numerator%denominator != 0 {
+			continue
+		}
 
-				restX := l3[0] - asumX
-				restY := l3[1] - asumY
+		a := numerator / denominator
+		if a < 0 {
+			continue
+		}
 
-				if a%100000000 == 0 {
-					fmt.Println(idx, a, restX, restY)
-				}
-				if restX < 0 || restY < 0 {
-					break
-				}
+		restX := l3[0] - l1[0]*a
+		restY := l3[1] - l1[1]*a
 
-				if l2[0] == 0 || l2[1] == 0 {
-					a++
-					continue
-				}
+		if restX < 0 || restY < 0 {
+			continue
+		}
 
-				if restX%l2[0] == 0 && restY%l2[1] == 0 && restX/l2[0] == restY/l2[1] {
-					x := restX / l2[0]
-					if x < 0 {
-						a++
-						continue
-					}
-					possibleSolutions = append(possibleSolutions, x+a*3)
-					break
-				}
-				a++
-			}
+		if restX%l2[0] != 0 || restY%l2[1] != 0 {
+			continue
+		}
 
-			if len(possibleSolutions) >= 1 {
-				results <- minInt64(possibleSolutions)
-			}
-		}(idx, game)
+		b1 := restX / l2[0]
+		b2 := restY / l2[1]
+
+		if b1 != b2 || b1 < 0 {
+			continue
+		}
+
+		tokensPerGame = append(tokensPerGame, b1+a*3)
 	}
 
-	wg.Wait()
-	close(results)
-
-	for tokens := range results {
+	var totalTokens int64
+	for _, tokens := range tokensPerGame {
 		totalTokens += tokens
 	}
 
 	fmt.Println(totalTokens)
-}
-
-func minInt64(slice []int64) int64 {
-	min := slice[0]
-	for _, v := range slice {
-		if v < min {
-			min = v
-		}
-	}
-	return min
 }
 
 var games = [][][]int64{
