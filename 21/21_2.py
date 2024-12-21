@@ -152,31 +152,45 @@ for code in inp[:]:
     min_len = min(len(x) for x in paths)
     paths = [list(x) for x in paths if len(x) == min_len]
     combinations.append(paths)
+    
 
-robotception = 2
+
+@lru_cache(maxsize=None)
+def get_sequence_dirpad(key, prev_key, ception=0):
+    if ception == 0:
+        return 1  # Base case
+    
+    cur_coord = dirpad_coords[prev_key]
+    next_coords = dirpad_coords[key]
+    
+    path1, path2 = pick_legal_path(get_paths(cur_coord, next_coords), reverse_dict(dirpad_coords))
+    min_total = float('inf')
+    
+    for path in [path1, path2]:
+        if path is not None:
+            comb = convert_to_directions(path) + ['A']
+            total_len = 0
+            prev = "A"
+            for next_key in comb:
+                total_len += get_sequence_dirpad(next_key, prev, ception - 1)
+                prev = next_key
+            min_total = min(min_total, total_len)
+    
+    return min_total
 
 score = 0
-for i, code_paths in enumerate(combinations):
-    all_path_combos = []
-    for path in code_paths:
-        cache = {}  # New cache for each starting path
-        all_combos = get_all_dirpad_recursive(tuple(path), dirpad_coords['A'], cache)
-        for ii in range(robotception-1):
-            next_combos = []
-            for jj, combo in enumerate(all_combos):
-                cache = {}  # New cache for each iteration
-                new_paths = get_all_dirpad_recursive(tuple(combo), dirpad_coords['A'], cache)
-                min_len = min(len(x) for x in new_paths)
-                new_paths = [x for x in new_paths if len(x) == min_len]
-                next_combos.extend(new_paths)
-            all_combos = next_combos
-            
-        min_len = min(len(x) for x in all_combos)
-    
-        all_combos = [x for x in all_combos if len(x) == min_len]
-        all_path_combos.extend(all_combos)
-        
-    min_len = min(len(x) for x in all_path_combos)
-    score += min_len * int("".join(inp[i][:-1]))
+for ii, combination in enumerate(combinations):
+    path_lengths = []
+
+    for comb in combination:
+        length = 0
+        prev_key = "A"
+        for key in comb:
+            length += get_sequence_dirpad(key, prev_key, 25)
+            prev_key = key
+        path_lengths.append(length)
+    min_len = min(path_lengths)
+    score += min_len * int("".join(inp[ii][:-1]))
 
 print(score)
+
